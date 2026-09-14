@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suivi Stock PC</title>
+<style>
+  :root{
+    --bg:#f4f6f9;
+    --card-bg:#ffffff;
+    --text:#1c2530;
+    --muted:#6b7684;
+    --border:#e2e6ec;
+    --accent:#2563eb;
+    --green:#16a34a;
+    --orange:#d97706;
+    --red:#dc2626;
+    --row-hover:#f8fafc;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1115;
+      --card-bg:#171a21;
+      --text:#e7eaee;
+      --muted:#9aa4b2;
+      --border:#2a2f3a;
+      --accent:#5b8def;
+      --green:#4ade80;
+      --orange:#fbbf24;
+      --red:#f87171;
+      --row-hover:#1d2129;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:24px 16px 60px;
+  }
+  .wrap{max-width:1100px;margin:0 auto;}
+  h1{font-size:1.5rem;margin:0 0 4px;}
+  .sub{color:var(--muted);font-size:.9rem;margin:0 0 20px;}
+
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;
+    margin-bottom:20px;
+  }
+  .card{
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px 16px;
+  }
+  .card .label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;}
+  .card .value{font-size:1.25rem;font-weight:700;margin-top:4px;}
+  .card.achat .value{color:var(--text);}
+  .card.paye .value{color:var(--accent);}
+  .card.avendre .value{color:var(--orange);}
+  .card.gain .value{color:var(--green);}
+  .card.agagner .value{color:var(--orange);}
+
+  .toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:16px;
+    align-items:center;
+  }
+  button, .btn{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    padding:9px 14px;
+    border-radius:8px;
+    font-size:.85rem;
+    cursor:pointer;
+    font-weight:600;
+  }
+  button.secondary{background:transparent;color:var(--text);border:1px solid var(--border);}
+  button.danger{background:var(--red);}
+  button:active{transform:translateY(1px);}
+  input[type=file]{display:none;}
+
+  .currency-input{
+    display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.85rem;margin-left:auto;
+  }
+  .currency-input input{
+    width:60px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);
+    background:var(--card-bg);color:var(--text);font-size:.85rem;
+  }
+
+  .table-container{
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow-x:auto;
+  }
+  table{border-collapse:collapse;width:100%;min-width:720px;}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);font-size:.88rem;}
+  th{color:var(--muted);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.03em;}
+  tbody tr:hover{background:var(--row-hover);}
+  td input[type=text], td input[type=number]{
+    width:100%;
+    padding:7px 8px;
+    border:1px solid transparent;
+    border-radius:6px;
+    background:transparent;
+    color:var(--text);
+    font-size:.88rem;
+  }
+  td input[type=text]:hover, td input[type=number]:hover{border-color:var(--border);}
+  td input[type=text]:focus, td input[type=number]:focus{
+    outline:none;border-color:var(--accent);background:var(--card-bg);
+  }
+  td input[type=number]{max-width:110px;}
+
+  .status-toggle{
+    display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+    padding:6px 10px;border-radius:20px;font-size:.78rem;font-weight:600;border:1px solid var(--border);
+  }
+  .status-toggle.paye{background:rgba(22,163,74,.12);color:var(--green);border-color:rgba(22,163,74,.3);}
+  .status-toggle.nonpaye{background:rgba(217,119,6,.12);color:var(--orange);border-color:rgba(217,119,6,.3);}
+  .status-toggle input{display:none;}
+
+  .benefice.pos{color:var(--green);font-weight:600;}
+  .benefice.neg{color:var(--red);font-weight:600;}
+
+  .del-btn{
+    background:transparent;color:var(--muted);border:none;cursor:pointer;font-size:1.1rem;padding:8px;
+    min-width:36px;min-height:36px;
+  }
+  .del-btn:hover{color:var(--red);}
+
+  footer{margin-top:16px;color:var(--muted);font-size:.78rem;text-align:center;}
+
+  /* --- Mobile: la table devient une liste de cartes empilées --- */
+  @media (max-width:640px){
+    body{padding:16px 10px 50px;}
+    h1{font-size:1.3rem;}
+    .cards{grid-template-columns:repeat(2,1fr);}
+    .toolbar{flex-direction:column;align-items:stretch;}
+    .toolbar button{width:100%;padding:12px 14px;font-size:.9rem;}
+    .currency-input{margin-left:0;justify-content:space-between;}
+    .currency-input input{width:80px;}
+
+    .table-container{overflow-x:visible;border-radius:0;background:transparent;border:none;}
+    table{min-width:0;width:100%;}
+    thead{display:none;}
+    tbody, tr, td{display:block;width:100%;}
+    tbody tr{
+      background:var(--card-bg);
+      border:1px solid var(--border);
+      border-radius:12px;
+      margin-bottom:12px;
+      padding:10px 12px;
+      position:relative;
+    }
+    tbody tr:hover{background:var(--card-bg);}
+    td{
+      border-bottom:none;
+      padding:8px 0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    td:not(:last-child){border-bottom:1px solid var(--border);}
+    td::before{
+      content:attr(data-label);
+      color:var(--muted);
+      font-size:.75rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+      flex:0 0 auto;
+    }
+    td:first-child{display:none;} /* numéro de ligne masqué sur mobile */
+    td:last-child{position:absolute;top:6px;right:6px;padding:0;border:none;}
+    td:last-child::before{content:"";}
+    td input[type=text], td input[type=number]{
+      text-align:right;
+      font-size:1rem;
+      padding:10px 8px;
+      min-height:40px;
+    }
+    td input[type=text]{text-align:left;}
+    td .benefice{margin-left:auto;}
+    .status-toggle{padding:8px 12px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Suivi Stock PC</h1>
+  <p class="sub">Prix d'achat, prix de vente et statut de paiement — sauvegarde locale + export JSON.</p>
+
+  <div class="cards">
+    <div class="card achat">
+      <div class="label">Prix d'achat total</div>
+      <div class="value" id="sumAchat">0</div>
+    </div>
+    <div class="card paye">
+      <div class="label">Total payé</div>
+      <div class="value" id="sumPaye">0</div>
+    </div>
+    <div class="card avendre">
+      <div class="label">Total à vendre</div>
+      <div class="value" id="sumAVendre">0</div>
+    </div>
+    <div class="card gain">
+      <div class="label">Gain</div>
+      <div class="value" id="sumGain">0</div>
+    </div>
+    <div class="card agagner">
+      <div class="label">À gagner</div>
+      <div class="value" id="sumAGagner">0</div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button id="addRowBtn">+ Ajouter une ligne</button>
+    <button class="secondary" id="exportBtn">Exporter JSON</button>
+    <button class="secondary" id="importBtn">Importer JSON</button>
+    <button class="danger" id="resetBtn">Réinitialiser</button>
+    <input type="file" id="fileInput" accept="application/json">
+    <div class="currency-input">
+      Devise
+      <input type="text" id="deviseInput" maxlength="6" value="DT">
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:40px;">#</th>
+          <th>Modèle</th>
+          <th style="width:130px;">Prix achat</th>
+          <th style="width:130px;">Prix vente</th>
+          <th style="width:120px;">Statut</th>
+          <th style="width:110px;">Bénéfice</th>
+          <th style="width:36px;"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    Les données sont sauvegardées automatiquement dans votre navigateur. Utilisez « Exporter JSON » puis
+    remplacez le fichier <code>stock.json</code> du dépôt pour publier vos changements sur GitHub.
+  </footer>
+</div>
+
+<script>
+const STORAGE_KEY = "stockPC_v1";
+let items = [];
+let devise = "DT";
+let nextId = 1;
+
+function defaultItems(){
+  const counts = [
+    ["HP G6 840", 10],
+    ["HP G8 i7", 1],
+    ["HP G8 i5", 1],
+    ["Lenovo Chromebook", 3],
+    ["Asus", 1],
+    ["Mac", 1],
+    ["Dell Tactile", 1],
+    ["Dell Amal", 1],
+    ["Dell Gadour", 1],
+  ];
+  const arr = [];
+  let id = 1;
+  for(const [modele, qty] of counts){
+    for(let i=0;i<qty;i++){
+      arr.push({ id: id++, modele, prixAchat: 0, prixVente: 0, paye: false });
+    }
+  }
+  return arr;
+}
+
+function fmt(n){
+  const num = Number(n) || 0;
+  return num.toLocaleString('fr-FR') + " " + devise;
+}
+
+function computeNextId(){
+  nextId = items.reduce((max, it) => Math.max(max, it.id), 0) + 1;
+}
+
+function render(){
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = "";
+  items.forEach((item, index) => {
+    const tr = document.createElement('tr');
+    const benefice = (Number(item.prixVente)||0) - (Number(item.prixAchat)||0);
+    const beneficeClass = benefice >= 0 ? 'pos' : 'neg';
+
+    tr.innerHTML = `
+      <td data-label="#">${index + 1}</td>
+      <td data-label="Modèle"><input type="text" data-field="modele" value="${escapeHtml(item.modele)}" placeholder="Modèle"></td>
+      <td data-label="Prix achat"><input type="number" data-field="prixAchat" value="${item.prixAchat}" min="0" step="1"></td>
+      <td data-label="Prix vente"><input type="number" data-field="prixVente" value="${item.prixVente}" min="0" step="1"></td>
+      <td data-label="Statut">
+        <label class="status-toggle ${item.paye ? 'paye' : 'nonpaye'}">
+          <input type="checkbox" data-field="paye" ${item.paye ? 'checked' : ''}>
+          <span>${item.paye ? 'Payé' : 'Non payé'}</span>
+        </label>
+      </td>
+      <td data-label="Bénéfice" class="benefice ${beneficeClass}">${fmt(benefice)}</td>
+      <td data-label=""><button class="del-btn" title="Supprimer">✕</button></td>
+    `;
+
+    tr.querySelector('[data-field="modele"]').addEventListener('input', e => {
+      item.modele = e.target.value;
+      save();
+    });
+    tr.querySelector('[data-field="prixAchat"]').addEventListener('input', e => {
+      item.prixAchat = e.target.value === "" ? 0 : Number(e.target.value);
+      renderRowBenefice(tr, item);
+      updateSummary();
+      save();
+    });
+    tr.querySelector('[data-field="prixVente"]').addEventListener('input', e => {
+      item.prixVente = e.target.value === "" ? 0 : Number(e.target.value);
+      renderRowBenefice(tr, item);
+      updateSummary();
+      save();
+    });
+    tr.querySelector('[data-field="paye"]').addEventListener('change', e => {
+      item.paye = e.target.checked;
+      const label = tr.querySelector('.status-toggle');
+      label.classList.toggle('paye', item.paye);
+      label.classList.toggle('nonpaye', !item.paye);
+      label.querySelector('span').textContent = item.paye ? 'Payé' : 'Non payé';
+      updateSummary();
+      save();
+    });
+    tr.querySelector('.del-btn').addEventListener('click', () => {
+      items = items.filter(it => it.id !== item.id);
+      render();
+      updateSummary();
+      save();
+    });
+
+    tbody.appendChild(tr);
+  });
+  updateSummary();
+}
+
+function renderRowBenefice(tr, item){
+  const benefice = (Number(item.prixVente)||0) - (Number(item.prixAchat)||0);
+  const cell = tr.querySelector('.benefice');
+  cell.textContent = fmt(benefice);
+  cell.className = 'benefice ' + (benefice >= 0 ? 'pos' : 'neg');
+}
+
+function updateSummary(){
+  let sumAchat = 0, sumPaye = 0, sumAVendre = 0, gain = 0, aGagner = 0;
+  for(const it of items){
+    const achat = Number(it.prixAchat) || 0;
+    const vente = Number(it.prixVente) || 0;
+    sumAchat += achat;
+    if(it.paye){
+      sumPaye += vente;
+      gain += (vente - achat);
+    } else {
+      sumAVendre += vente;
+      aGagner += (vente - achat);
+    }
+  }
+  document.getElementById('sumAchat').textContent = fmt(sumAchat);
+  document.getElementById('sumPaye').textContent = fmt(sumPaye);
+  document.getElementById('sumAVendre').textContent = fmt(sumAVendre);
+  document.getElementById('sumGain').textContent = fmt(gain);
+  document.getElementById('sumAGagner').textContent = fmt(aGagner);
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str ?? "";
+  return div.innerHTML;
+}
+
+function save(){
+  const payload = {
+    devise,
+    derniereMiseAJour: new Date().toISOString(),
+    items
+  };
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  }catch(e){}
+}
+
+function exportJSON(){
+  const payload = {
+    devise,
+    derniereMiseAJour: new Date().toISOString(),
+    items
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'stock.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function applyPayload(payload){
+  if(!payload || !Array.isArray(payload.items)) return false;
+  items = payload.items.map(it => ({
+    id: it.id ?? 0,
+    modele: it.modele ?? "",
+    prixAchat: Number(it.prixAchat) || 0,
+    prixVente: Number(it.prixVente) || 0,
+    paye: !!it.paye
+  }));
+  computeNextId();
+  items.forEach(it => { if(!it.id) it.id = nextId++; });
+  devise = payload.devise || devise;
+  document.getElementById('deviseInput').value = devise;
+  return true;
+}
+
+async function loadInitialData(){
+  // 1) essaie de charger stock.json (fonctionne sur GitHub Pages / serveur http)
+  try{
+    const res = await fetch('stock.json', {cache: 'no-store'});
+    if(res.ok){
+      const data = await res.json();
+      if(applyPayload(data)) return;
+    }
+  }catch(e){ /* file:// bloque fetch, ou fichier absent */ }
+
+  // 2) sinon, données sauvegardées localement dans le navigateur
+  try{
+    const local = localStorage.getItem(STORAGE_KEY);
+    if(local){
+      const data = JSON.parse(local);
+      if(applyPayload(data)) return;
+    }
+  }catch(e){}
+
+  // 3) sinon, valeurs par défaut (les 20 PC)
+  items = defaultItems();
+  computeNextId();
+}
+
+document.getElementById('addRowBtn').addEventListener('click', () => {
+  items.push({ id: nextId++, modele: "", prixAchat: 0, prixVente: 0, paye: false });
+  render();
+  save();
+});
+
+document.getElementById('exportBtn').addEventListener('click', exportJSON);
+
+document.getElementById('importBtn').addEventListener('click', () => {
+  document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const data = JSON.parse(reader.result);
+      if(applyPayload(data)){
+        render();
+        save();
+      }else{
+        alert("Fichier JSON invalide.");
+      }
+    }catch(err){
+      alert("Impossible de lire ce fichier JSON.");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if(!confirm("Réinitialiser toutes les données aux 20 PC par défaut ?")) return;
+  items = defaultItems();
+  computeNextId();
+  render();
+  save();
+});
+
+document.getElementById('deviseInput').addEventListener('input', (e) => {
+  devise = e.target.value || "DT";
+  render();
+  save();
+});
+
+loadInitialData().then(render);
+</script>
+</body>
+</html>
