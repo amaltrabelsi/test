@@ -1,68 +1,68 @@
 {
   "devise": "DT",
-  "derniereMiseAJour": "2026-09-14T12:54:09.847Z",
+  "derniereMiseAJour": "2026-09-14T12:56:43.841Z",
   "items": [
     {
       "id": 1,
       "modele": "HP EliteBook G6",
       "prixAchat": 659.2,
       "prixVente": 800,
-      "paye": false
+      "paye": true
     },
     {
       "id": 2,
       "modele": "Mac",
       "prixAchat": 1400.6,
       "prixVente": 1550,
-      "paye": false
+      "paye": true
     },
     {
       "id": 3,
       "modele": "Lenovo Chromebook",
       "prixAchat": 490.7,
       "prixVente": 600,
-      "paye": false
+      "paye": true
     },
     {
       "id": 4,
       "modele": "HP EliteBook G6",
       "prixAchat": 659.2,
       "prixVente": 850,
-      "paye": false
+      "paye": true
     },
     {
       "id": 5,
       "modele": "HP EliteBook G8",
       "prixAchat": 1131,
       "prixVente": 1350,
-      "paye": false
+      "paye": true
     },
     {
       "id": 6,
       "modele": "Dell 7340",
       "prixAchat": 1232.1,
       "prixVente": 1400,
-      "paye": false
+      "paye": true
     },
     {
       "id": 7,
       "modele": "Dell 7440",
       "prixAchat": 1299.5,
       "prixVente": 1800,
-      "paye": false
+      "paye": true
     },
     {
       "id": 8,
       "modele": "Asus",
       "prixAchat": 625.5,
       "prixVente": 800,
-      "paye": false
+      "paye": true
     },
     {
       "id": 9,
       "modele": "i5 bloc",
       "prixAchat": 928.8,
-      "prixVente": 928.8,
+      "prixVente": 1000,
       "paye": false
     },
     {
@@ -70,28 +70,28 @@
       "modele": "G6 gros (lot)",
       "prixAchat": 3296,
       "prixVente": 4000,
-      "paye": false
+      "paye": true
     },
     {
       "id": 11,
       "modele": "Lenovo Chromebook",
       "prixAchat": 490.7,
       "prixVente": 590,
-      "paye": false
+      "paye": true
     },
     {
       "id": 12,
       "modele": "Lenovo Chromebook",
       "prixAchat": 490.7,
       "prixVente": 590,
-      "paye": false
+      "paye": true
     },
     {
       "id": 13,
       "modele": "Dell Amal",
       "prixAchat": 1140,
       "prixVente": 1200,
-      "paye": false
+      "paye": true
     },
     {
       "id": 14,
@@ -111,7 +111,7 @@
       "id": 16,
       "modele": "Elite book G6 ",
       "prixAchat": 659.2,
-      "prixVente": 659.2,
+      "prixVente": 860,
       "paye": false
     }
   ]
