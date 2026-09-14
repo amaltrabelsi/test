@@ -263,25 +263,23 @@ let devise = "DT";
 let nextId = 1;
 
 function defaultItems(){
-  const counts = [
-    ["HP G6 840", 10],
-    ["HP G8 i7", 1],
-    ["HP G8 i5", 1],
-    ["Lenovo Chromebook", 3],
-    ["Asus", 1],
-    ["Mac", 1],
-    ["Dell Tactile", 1],
-    ["Dell Amal", 1],
-    ["Dell Gadour", 1],
+  const rows = [
+    ["HP EliteBook G6", 659.2],
+    ["Mac", 1400.6],
+    ["Lenovo Chromebook", 490.7],
+    ["HP EliteBook G6", 659.2],
+    ["HP EliteBook G8", 1131.0],
+    ["Dell 7340", 1232.1],
+    ["Dell 7440", 1299.5],
+    ["Asus", 625.5],
+    ["i5 bloc", 928.8],
+    ["G6 gros (lot)", 3296.0],
+    ["Lenovo Chromebook", 490.7],
+    ["Lenovo Chromebook", 490.7],
+    ["Dell Amal", 1140.0],
+    ["A completer", 0],
   ];
-  const arr = [];
-  let id = 1;
-  for(const [modele, qty] of counts){
-    for(let i=0;i<qty;i++){
-      arr.push({ id: id++, modele, prixAchat: 0, prixVente: 0, paye: false });
-    }
-  }
-  return arr;
+  return rows.map(([modele, prixAchat], i) => ({ id: i + 1, modele, prixAchat, prixVente: 0, paye: false }));
 }
 
 function fmt(n){
