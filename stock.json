@@ -1,0 +1,26 @@
+{
+  "devise": "DT",
+  "derniereMiseAJour": "",
+  "items": [
+    { "id": 1, "modele": "HP G6 840", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 2, "modele": "HP G6 840", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 3, "modele": "HP G6 840", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 4, "modele": "HP G6 840", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 5, "modele": "HP G6 840", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 6, "modele": "HP G6 840", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 7, "modele": "HP G6 840", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 8, "modele": "HP G6 840", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 9, "modele": "HP G6 840", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 10, "modele": "HP G6 840", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 11, "modele": "HP G8 i7", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 12, "modele": "HP G8 i5", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 13, "modele": "Lenovo Chromebook", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 14, "modele": "Lenovo Chromebook", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 15, "modele": "Lenovo Chromebook", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 16, "modele": "Asus", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 17, "modele": "Mac", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 18, "modele": "Dell Tactile", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 19, "modele": "Dell Amal", "prixAchat": 0, "prixVente": 0, "paye": false },
+    { "id": 20, "modele": "Dell Gadour", "prixAchat": 0, "prixVente": 0, "paye": false }
+  ]
+}
